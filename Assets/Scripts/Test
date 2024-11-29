@@ -1,0 +1,49 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Ball : MonoBehaviour
+{
+    Rigidbody2D rigidbody2d;
+    public float speed = 5.0f;
+
+    private void Awake()
+    {
+        rigidbody2d = GetComponent<Rigidbody2D>();
+    }
+
+    private void Start()
+    {
+        rigidbody2d.velocity = new Vector2(0f,speed);
+    }
+
+    private void FixedUpdate()
+    {
+        if (rigidbody2d.velocity.x > 20f ) 
+        {
+            rigidbody2d.velocity = new Vector2(20f, rigidbody2d.velocity.y);
+        }
+        if (rigidbody2d.velocity.y > 20f)
+        {
+            rigidbody2d.velocity = new Vector2(rigidbody2d.velocity.x, 20f);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log(rigidbody2d.velocity.ToString());
+        //Bei Kollision mit Spielerbalken
+        if (collision.transform.tag == "Player") 
+        {
+            Vector3 balken = collision.transform.position;
+            if (transform.position.x < balken.x)
+            {
+                rigidbody2d.AddForce(new Vector2(-90f * (balken.x - transform.position.x), 0f));
+            }
+            else if (transform.position.x > balken.x)
+            {
+                rigidbody2d.AddForce(new Vector2(90f * (transform.position.x - balken.x), 0f));
+            }
+        }
+    }
+}
